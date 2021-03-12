@@ -1,0 +1,98 @@
+<!-- extends表明此页面继承自 base.html 文件 -->
+{% extends "base.html" %}
+{% load staticfiles %}
+
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+    文章详情
+{% endblock title %}
+
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+
+    <!-- 文章详情 -->
+    <div class="container">
+        <div class="row" style="margin-bottom: 100px">
+            <!-- 标题及作者 -->
+            <h1 class="col-12 mt-4 mb-4">{{ article.name }}</h1>
+            <div class="col-12 alert alert-success">
+                <span style="margin-left: 10px">作者：{{ article.author }}</span>
+                <span style="margin-left: 100px">浏览：{{ article.total_views }}</span>
+                <span style="margin-left: 100px">标签：
+                    {% for tag in article.tags.all %}
+                        <a href="#" class="badge badge-secondary">{{ tag }}</a>
+                    {% endfor %}
+                </span>
+                <span style="margin-left: 100px">分类：{{ article.category }}</span>
+            </div>
+            <!-- 文章正文 -->
+            <div class="col-12">
+                <p>{{ article.body|safe }}</p>
+            </div>
+            <hr>
+        </div>
+        <br>
+        <!-- 相邻文章导航 -->
+        <div class="row justify-content-end">
+            {% if pre_article %}
+                <div class="col-auto mr-auto">
+                    <a href="{{ pre_article.get_absolute_url }}" class="btn btn-info">
+                        <span> &lt;&lt;&nbsp;{{ pre_article.name }}</span>
+                    </a>
+                </div>
+            {% endif %}
+            {% if next_article %}
+                <div class="col-auto">
+                    <a href="{{ next_article.get_absolute_url }}" class="btn btn-info">
+                        <span>{{ next_article.name }}&nbsp;&gt;&gt;</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <hr>
+        <div style="margin-bottom: 100px">
+            {% if user.is_authenticated %}
+                <div>
+                    <form action="{% url 'blog:article_comment' article.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="body"><strong>我也要发言：</strong></label><br>
+                            {#                            <textarea type="text" class="form-control" id="body" name="body" rows="2" style="width:500px;height: 100px "></textarea>#}
+
+                            {{ comment_form.media }}
+                            {{ comment_form.body }}
+
+                        </div>
+                        <!-- 提交按钮 -->
+                        <button type="submit" class="btn btn-primary ">发送</button>
+                    </form>
+                </div>
+                <br>
+            {% else %}
+                <br>
+                <h5 class="row justify-content-center">
+                    请<a href="{% url 'userinfo:login' %}">登录</a>后回复
+                </h5>
+                <br>
+            {% endif %}
+            <div>
+                <!-- 显示评论 -->
+                <h4>共有{{ comments.count }}条评论</h4>
+                <div>
+                    {% for comment in comments %}
+                        <hr>
+                        <p><strong style="color: pink">{{ comment.user }}</strong> 于<span
+                                style="color: green">{{ comment.created_time|date:"Y-m-d H:i:s" }}</span> 时发表评论：</p>
+                        <pre style="font-family: inherit; font-size: 1em;">{{ comment.body|safe }}</pre>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block script %}
+        <script>
+            $(".django-ckeditor-widget").removeAttr('style');
+        </script>
+    {% endblock script %}
+
+{% endblock content %}

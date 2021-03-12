@@ -1,0 +1,16 @@
+from django.urls import path, include, re_path
+from userinfo import views
+
+urlpatterns = [
+    # 用户注册
+    path('register/', views.user_register, name='register'),
+    # 用户登录
+    path('login/', views.user_login, name='login'),
+    # 用户退出
+    path('logout/', views.user_logout, name='logout'),
+    # 用户删除
+    path('delete/<int:id>/', views.user_delete, name='delete'),
+    # 更新用户
+    path('update/<int:id>/', views.user_update, name='update'),
+
+]

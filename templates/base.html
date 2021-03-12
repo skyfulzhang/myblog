@@ -1,0 +1,114 @@
+<!-- 载入静态文件 -->
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<!-- 网站主语言 -->
+<html lang="zh-cn">
+
+<head>
+    <!-- 网站采用的字符编码 -->
+    <meta charset="utf-8">
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+          integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+          crossorigin="anonymous"
+    >
+    <!-- 预留网站标题的位置 -->
+    <title>{% block title %}{% endblock %}</title>
+    <!-- 引入bootstrap的css文件 -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <!-- 引入prism.css -->
+    <link rel="stylesheet" href="{% static 'prism/prism.css' %}">
+</head>
+
+<body>
+<!-- 引入导航栏 -->
+<!-- 定义导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <div class="navbar-header">
+            <h1><a class="navbar-brand" href="{% url 'blog:index' %}"><b>Black</b> &amp; White</a></h1>
+        </div>
+        <a href="{% url 'blog:article_list' %}">文章</a>
+        <a href="{% url 'blog:article_hot' %}">最热</a>
+        <a href="{% url 'blog:article_django' %}">Django 学习</a>
+        <a href="{% url 'blog:article_flask' %}">Flask 学习</a>
+        <a href="{% url 'blog:article_scrapy' %}">Scrapy 爬虫</a>
+        <div class="row">
+            <div class="col-auto mr-auto">
+                <form class="form-inline">
+                    <label class="sr-only">搜索</label>
+                    <input type="text"
+                           class="form-control mb-2 mr-sm-2"
+                           name="search"
+                           placeholder="搜索文章..."
+                           required value="{{ search }}"
+                    >
+                    <input type="submit" value="搜索" class="form-control mb-2 mr-sm-2">
+                </form>
+
+            </div>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+                <!-- 如果用户已经登录，则显示用户名下拉框 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'userinfo:update' user.id %}"
+                       style="color: red">{{ user.username }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'userinfo:logout' %}">退出登录</a>
+                </li>
+                <!-- 如果用户未登录，则显示 “登录” -->
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'userinfo:register' %}">注册</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'userinfo:login' %}">登录</a>
+                </li>
+                <!-- if 语句在这里结束 -->
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<!-- 预留具体页面的位置 -->
+<div id="wrapper">
+    {% block content %}{% endblock content %}
+    <div id="push"></div>
+</div>
+<!-- bootstrap.js 依赖 jquery.js 和popper.js，因此在这里引入 -->
+<script src="{% static 'jquery/jquery-3.4.js' %}"></script>
+<script src="{% static 'popper/popper-1.15.js' %}"></script>
+<!-- 引入bootstrap的js文件 -->
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<!-- 引入layer.js  layer插件依赖jquery才能正常工作，因此要在jquery的后面引入layer-->
+<script src="{% static 'layer/layer.js' %}"></script>
+<!-- 新增代码 -->
+{% block script %}{% endblock script %}
+{% include 'blog/back_to_top.html' %}
+</body>
+<!-- 引入注脚 -->
+<footer class="py-3 bg-dark " id="footer" style="margin-top: 30px">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; www.skyful.com 2019</p>
+    </div>
+</footer>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    #wrapper {
+        min-height: 100%;
+        margin-bottom: -60px;
+    }
+
+    #footer,
+    #push {
+        height: 60px;
+    }
+</style>
+</html>

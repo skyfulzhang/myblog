@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% load staticfiles %}
+{% block title %} 用户信息 {% endblock title %}
+{% block content %}
+    <div class="container" style="padding-bottom: 100px">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <div class="col-md-4">用户名：{{ user.username }}</div>
+                <br>
+                {% if userinfo.avatar %}
+                    <div class="col-md-4">头像：</div>
+                    <img src="{{ userinfo.avatar.url }}" style="max-width: 20%; border-radius: 15%;" class="col-md-4">
+                {% else %}
+                    <h6 class="col-md-4">暂无头像</h6>
+                {% endif %}
+                <br>
+                <br>
+                <form method="post" action="." enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- phone -->
+                    <div class="form-group col-md-4">
+                        <label for="phone">电话：</label>
+                        <input type="text" class="form-control" id="phone" name="phone" value="{{ userinfo.phone }}">
+                    </div>
+                    <!-- city -->
+                    <div class="form-group col-md-4">
+                        <label for="city">城市：</label>
+                        <input type="text" class="form-control" id="city" name="city" value="{{ userinfo.city }}">
+                    </div>
+                    <!-- avatar -->
+                    <div class="form-group col-md-4">
+                        <label for="avatar">修改头像：</label>
+                        <input type="file" class="form-control-file" id="avatar" name="avatar">
+                    </div>
+                    <!-- bio -->
+                    <div class="form-group col-md-4">
+                        <label for="profile">简介：</label>
+                        <textarea type="text" class="form-control" id="profile" name="profile"
+                                  rows="12">{{ userinfo.profile }}</textarea>
+                    </div>
+                    <!-- 提交按钮 -->
+                    <button type="submit" class="btn btn-primary">更新</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
